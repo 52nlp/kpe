@@ -800,6 +800,40 @@ public class KPEFilter implements Serializable {
       }
     }
 
+    //==========================================================================
+    // Adrien Bougouin: filter candidates based on pos and adjectives
+    //==========================================================================
+    List<NGram> toRemove = new ArrayList<NGram>();
+    HashMap<NGram, HashMap<String, NGramStats>> ngrams = new HashMap<NGram, HashMap<String, NGramStats>>();
+
+    // find every ngrams
+    for(String key : hash.keySet()) {
+      for(NGram ngram : hash.get(key).keySet()) {
+        NGramStats stats = hash.get(key).get(ngram);
+
+        if(ngrams.get(ngram) == null) {
+          ngrams.put(ngram, new HashMap<String, NGramStats>());
+        }
+        Map<String, NGramStats> ngrams_entry = ngrams.get(ngram);
+
+        ngrams_entry.put(key, stats);
+      }
+    }
+
+    // TODO find ngrams to remove
+    for(NGram ngram : ngrams.keySet()) {
+      // TODO
+    }
+
+    // remove the candidates that do not fit
+    for(NGram ngram : toRemove) {
+      hash.get(ngrams.get(ngram)).remove(ngram);
+      if(hash.get(ngrams.get(ngram)).isEmpty()) {
+        hash.remove(ngrams.get(ngram));
+      }
+    }
+    //==========================================================================
+
     // System.err.println(document.getFile());
     if (document.isScientific() && referencePosition == Integer.MAX_VALUE) {
       System.err.println("No refs were found for file " + document.getFile());
